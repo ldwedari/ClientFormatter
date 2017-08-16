@@ -1,0 +1,5 @@
+<p>Type a list of valid css colors separated by commas</p>
+<input #colorText type="text" />
+<pre id="coloredText" >
+    <span *ngFor="let letterInfo of letterInfoArray" [style.color]="letterInfo.color">{{letterInfo.letter}}</span>
+</pre>
