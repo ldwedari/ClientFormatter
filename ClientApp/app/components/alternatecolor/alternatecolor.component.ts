@@ -1,20 +1,20 @@
 
 import { Component, NgZone, ChangeDetectorRef, ApplicationRef,
-    ViewChild, ElementRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ICharInfo } from './icharinfo'
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/throttleTime';
-import 'rxjs/add/observable/fromEvent';
+    ViewChild, ElementRef } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { ICharInfo } from "./icharinfo"
+import "rxjs/add/operator/debounceTime";
+import "rxjs/add/operator/distinctUntilChanged";
+import "rxjs/add/operator/throttleTime";
+import "rxjs/add/observable/fromEvent";
 
 @Component({
-    selector: 'alternate-color',
-    templateUrl: './alternatecolor.component.html'
+    selector: "alternate-color",
+    templateUrl: "./alternatecolor.component.html"
 })
 export class AlternateColorComponent {
-    colorText = 'red';
-    @ViewChild('colorText') colorTextRef: ElementRef;
+    colorText = "red";
+    @ViewChild("colorText") colorTextRef: ElementRef;
     colors: string[];
     text: string;
     letterInfoArray: ICharInfo[];
@@ -23,7 +23,7 @@ export class AlternateColorComponent {
         private appref: ApplicationRef) { }
     ngAfterViewInit() {
         this.ngzone.runOutsideAngular(() => {
-            Observable.fromEvent<KeyboardEvent>(this.colorTextRef.nativeElement, 'keyup')
+            Observable.fromEvent<KeyboardEvent>(this.colorTextRef.nativeElement, "keyup")
                 .debounceTime(300)
                 .distinctUntilChanged()
                 .subscribe(keyboardEvent => {
@@ -35,32 +35,34 @@ export class AlternateColorComponent {
         });
     }
 
-    private escape(letter: string) : string
-    {
-        switch (letter) {
-            //case '<': return "&lt;";
-            //case '>': return "&gt;";
-            default: return letter;
+    private validateColorText(): boolean {
+        const colorTest = document.getElementById("colorTest");
+        if (colorTest == null)
+            return false;
+        for (let color of this.colors) {
+            colorTest.style.color = "";
+            colorTest.style.color = color;
+            if (!(colorTest.style.color))
+                return false;
         }
-    }
-    private validateColorText() : boolean {
         return true;
     }
-    private updateText()
-    {
+
+    private updateText() {
         this.text = "asdf dsfsd fa fasd fsda sdf <input> .sd sd,dsf.";
+        this.colors = this.colorText.split(";").map(color => color.trim());
         if (!this.validateColorText())
             return;
-        this.colorText = "red,green,blue";
-        this.colors = this.colorText.split(',').map(color => color.trim());
         this.letterInfoArray = [];
-        for (let indx = 0; indx < this.text.length; indx++)
-        {
+        let i = 0;
+        for (let char of this.text) {
             this.letterInfoArray.push(
                 {
-                    letter: this.escape(this.text[indx]),
-                    color: this.colors[indx % this.colors.length]
+                    letter: char,
+                    color: this.colors[i % this.colors.length]
                 });
+            if (char !== " " && char !== "\t")
+                i++;
         }
     }
 }
