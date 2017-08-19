@@ -12,19 +12,19 @@ import 'rxjs/add/observable/fromEvent';
     templateUrl: './input.component.html'
 })
 export class InputComponent {
-    firstText = 'Name';
-    @ViewChild('inputText') inputTextRef: ElementRef;
-    text: string;
+    inputText: string;
+    @ViewChild('inputTextBox') inputTextRef: ElementRef;
+    //text: string;
     constructor(private ngzone: NgZone, private cdref: ChangeDetectorRef,
         private appref: ApplicationRef) { }
     ngAfterViewInit() {
         this.ngzone.runOutsideAngular(() => {
             Observable.fromEvent<KeyboardEvent>(this.inputTextRef.nativeElement, 'keyup')
-                .debounceTime(300)
+                .debounceTime(500)
                 .distinctUntilChanged()
                 .subscribe(keyboardEvent => {
-                    this.firstText = (<HTMLTextAreaElement>keyboardEvent.target).value;
-                    console.log(this.firstText);
+                    this.inputText = (<HTMLTextAreaElement>keyboardEvent.target).value;
+                    //console.log(this.inputText);
                     this.cdref.detectChanges();
                 });
         });
