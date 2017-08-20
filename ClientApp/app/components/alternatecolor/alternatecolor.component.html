@@ -1,5 +1,16 @@
-<p>Type a list of valid css colors separated by commas</p>
-<input #colorText type="text" />
-<pre id="coloredText" >
-    <span *ngFor="let letterInfo of letterInfoArray" [style.color]="letterInfo.color">{{letterInfo.letter}}</span>
-</pre>
+<form #colorForm="ngForm" autocomplete="off">
+    <div class="form-group row">
+        <label for="colorText">Type valid css colors separated by semicolons:</label>
+        <span *ngIf="(colorNgModel.dirty || colorNgModel.touched)">
+            <em *ngIf="colorNgModel.invalid">Required</em>
+            <em *ngIf="colorNgModel.valid && !areColorsValid">Color {{invalidColor}} is not valid.</em>
+        </span>
+        <input #colorText #colorNgModel="ngModel" (ngModel)="dummy" name="colorText" class="col-xs-12" 
+               type="text" placeholder="Red;rgb(0,255,128);transparent" required/>
+    </div>
+</form>
+<!--<pre id="coloredText" ><span *ngFor="let letterInfo of letterInfoArray" [style.color]="letterInfo.color">{{letterInfo.letter}}</span></pre>-->
+<div class="row">
+<pre #coloredText id="coloredText"></pre>
+</div>
+<p>Elapsed time: {{elapsedTime}}</p>

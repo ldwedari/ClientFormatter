@@ -1,0 +1,18 @@
+form {
+    margin-top: 10px;
+}
+
+
+.form-group {
+    margin-top: 5px;
+}
+
+em {
+    color: #E05C65;
+    padding-left: 10px;
+    float:right;
+}
+
+.error input {
+    background-color: #E3C3C5;
+}

@@ -9,7 +9,8 @@ import 'rxjs/add/observable/fromEvent';
 
 @Component({
     selector: 'input-formatter',
-    templateUrl: './input.component.html'
+    templateUrl: './input.component.html',
+    styleUrls: ['./input.component.css']
 })
 export class InputComponent {
     inputText: string;

@@ -9,30 +9,23 @@ import "rxjs/add/operator/throttleTime";
 import "rxjs/add/observable/fromEvent";
 @Component({
     selector: "alternate-color",
-    templateUrl: "./alternatecolor.component.html"
+    templateUrl: "./alternatecolor.component.html",
+    styleUrls: ['./alternatecolor.component.css']
+
 })
 export class AlternateColorComponent implements OnChanges {
     colorText: string;
     @ViewChild("colorText") colorTextRef: ElementRef;
+    @ViewChild("coloredText") coloredTextRef: ElementRef;
     colors: string[] = [];
     private _text: string;
-
+    areColorsValid: boolean = false;
+    invalidColor: string = "";
+    elapsedTime: number;
     @Input('text')
-    set in(inputText: string) {
-        this._text = inputText;
-        if (!this._text || this.colors.length == 0)
-            return;
-        this.letterInfoArray = [];
-        let i = 0;
-        for (let char of this._text) {
-            this.letterInfoArray.push(
-                {
-                    letter: char,
-                    color: this.colors[i % this.colors.length]
-                });
-            if (char !== " " && char !== "\t")
-                i++;
-        }
+    set in(value: string) {
+        this._text = value;
+        this.updateText();
     }
 
     letterInfoArray: ICharInfo[];
@@ -47,6 +40,7 @@ export class AlternateColorComponent implements OnChanges {
                 .distinctUntilChanged()
                 .subscribe(keyboardEvent => {
                     this.colorText = (<HTMLTextAreaElement>keyboardEvent.target).value;
+                    this.parseColors();
                     this.updateText();
                     this.cdref.detectChanges();
                 });
@@ -57,34 +51,60 @@ export class AlternateColorComponent implements OnChanges {
     } 
 
     private validateColorText(): boolean {
+        this.invalidColor = "";
+        this.areColorsValid = false;
         const colorTest = document.getElementById("colorTest");
         if (colorTest == null)
             return false;
         for (let color of this.colors) {
             colorTest.style.color = "";
             colorTest.style.color = color;
-            if (!(colorTest.style.color))
+            if (!(colorTest.style.color)) {
+                this.invalidColor = color;
                 return false;
+            }
         }
+        this.areColorsValid = true;
         return true;
     }
 
-    private updateText() {
-        if (!this._text)
-            return; 
+    private parseColors() {
         this.colors = this.colorText.split(";").map(color => color.trim());
-        if (!this.validateColorText())
+        this.validateColorText();
+    }
+
+    private updateText() {
+        let startTime : any = new Date();
+        if (!this._text || !this.areColorsValid)
             return;
         this.letterInfoArray = [];
         let i = 0;
+        //let element: HTMLElement = this.coloredTextRef.nativeElement;
+
+        let element = document.getElementById("coloredText");
+        if (!element)
+            return;
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+        var fragment = document.createDocumentFragment();
         for (let char of this._text) {
-            this.letterInfoArray.push(
-                {
-                    letter: char,
-                    color: this.colors[i % this.colors.length]
-                });
+            let node = document.createElement("span");
+            //let textNode = document.createTextNode(char);
+            //node.appendChild(textNode);
+            node.style.color = this.colors[i % this.colors.length];
+            node.textContent = char;
+            fragment.appendChild(node);
+            //this.letterInfoArray.push(
+            //    {
+            //        letter: char,
+            //        color: this.colors[i % this.colors.length]
+            //    });
             if (char !== " " && char !== "\t")
                 i++;
         }
+        element.appendChild(fragment);
+        let endTime: any = new Date();
+        this.elapsedTime = endTime - startTime;
     }
 }

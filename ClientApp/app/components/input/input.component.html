@@ -1,5 +1,14 @@
-<p>Type the text you want to format.</p>
-<!--<textarea id="text" type="text" rows="10" [(ngModel)]='text' (ngModelChange)=""></textarea>-->
-<span id="colorTest" style="display:none"></span>
-<textarea #inputTextBox type="text" rows="10"></textarea>
-<alternate-color [text]="inputText"></alternate-color>
+<div id="inputComponent">
+    <span id="colorTest" style="display:none"></span>
+    <form #inputForm="ngForm" autocomplete="off">
+        <div class="form-group row">
+            <label for="inputTextBox">Type the text you want to format.</label>
+            <span *ngIf="inputNgModel.invalid && (inputNgModel.dirty || inputNgModel.touched)">
+                <em *ngIf="inputNgModel.invalid">Required</em>  
+            </span>
+            <textarea #inputTextBox #inputNgModel="ngModel" (ngModel)="dummy" class="col-xs-12" name="inputTextBox" type="text"
+                      rows="10" placeholder="Some text here..." required></textarea>
+        </div>
+    </form>
+    <alternate-color [text]="inputText"></alternate-color>
+</div>
