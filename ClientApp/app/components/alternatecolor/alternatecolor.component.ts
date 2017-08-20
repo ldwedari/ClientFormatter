@@ -1,6 +1,7 @@
 
 import { Component, NgZone, ChangeDetectorRef, ApplicationRef,
-    ViewChild, ElementRef, Input, SimpleChanges, OnChanges } from "@angular/core";
+    ViewChild, Input, SimpleChanges, OnChanges,
+    QueryList, ElementRef} from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { ICharInfo } from "./icharinfo"
 import "rxjs/add/operator/debounceTime";
@@ -13,7 +14,7 @@ import "rxjs/add/observable/fromEvent";
     styleUrls: ['./alternatecolor.component.css']
 
 })
-export class AlternateColorComponent implements OnChanges {
+export class AlternateColorComponent {
     colorText: string;
     @ViewChild("colorText") colorTextRef: ElementRef;
     @ViewChild("coloredText") coloredTextRef: ElementRef;
@@ -21,7 +22,9 @@ export class AlternateColorComponent implements OnChanges {
     private _text: string;
     areColorsValid: boolean = false;
     invalidColor: string = "";
-    elapsedTime: number;
+    elapsedTime: number = 0;
+    private startTime: any;
+    private endTime: any;
     @Input('text')
     set in(value: string) {
         this._text = value;
@@ -44,11 +47,8 @@ export class AlternateColorComponent implements OnChanges {
                     this.updateText();
                     this.cdref.detectChanges();
                 });
-
         });
     }
-    ngOnChanges(changes: SimpleChanges) {
-    } 
 
     private validateColorText(): boolean {
         this.invalidColor = "";
@@ -73,38 +73,50 @@ export class AlternateColorComponent implements OnChanges {
         this.validateColorText();
     }
 
-    private updateText() {
-        let startTime : any = new Date();
-        if (!this._text || !this.areColorsValid)
-            return;
-        this.letterInfoArray = [];
+    private updateTextDOM() {
         let i = 0;
-        //let element: HTMLElement = this.coloredTextRef.nativeElement;
+        let element: HTMLElement = this.coloredTextRef.nativeElement;
 
-        let element = document.getElementById("coloredText");
         if (!element)
             return;
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
+
+        element.innerHTML = "";
+        //while (element.firstChild) {
+        //    element.removeChild(element.firstChild);
+        //}
         var fragment = document.createDocumentFragment();
         for (let char of this._text) {
             let node = document.createElement("span");
-            //let textNode = document.createTextNode(char);
-            //node.appendChild(textNode);
             node.style.color = this.colors[i % this.colors.length];
             node.textContent = char;
             fragment.appendChild(node);
-            //this.letterInfoArray.push(
-            //    {
-            //        letter: char,
-            //        color: this.colors[i % this.colors.length]
-            //    });
             if (char !== " " && char !== "\t")
                 i++;
         }
         element.appendChild(fragment);
-        let endTime: any = new Date();
-        this.elapsedTime = endTime - startTime;
+    }
+
+    private updateTextTemplate() {
+        let i = 0;
+        for (let char of this._text) {
+            this.letterInfoArray.push(
+                {
+                    letter: char,
+                    color: this.colors[i % this.colors.length]
+                });
+            if (char !== " " && char !== "\t")
+                i++;
+        }
+    }
+
+    private updateText() {
+        if (!this._text || !this.areColorsValid)
+            return;
+        this.letterInfoArray = [];
+        this.startTime = new Date();
+        this.updateTextDOM();
+        //this.updateTextTemplate();
+        this.endTime = new Date();
+        this.elapsedTime = this.endTime - this.startTime;
     }
 }

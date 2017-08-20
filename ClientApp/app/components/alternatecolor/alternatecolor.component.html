@@ -5,12 +5,12 @@
             <em *ngIf="colorNgModel.invalid">Required</em>
             <em *ngIf="colorNgModel.valid && !areColorsValid">Color {{invalidColor}} is not valid.</em>
         </span>
-        <input #colorText #colorNgModel="ngModel" (ngModel)="dummy" name="colorText" class="col-xs-12" 
+        <input #colorText #colorNgModel="ngModel" (ngModel)="dummy" name="colorText" class="form-control col-xs-12" 
                type="text" placeholder="Red;rgb(0,255,128);transparent" required/>
     </div>
 </form>
-<!--<pre id="coloredText" ><span *ngFor="let letterInfo of letterInfoArray" [style.color]="letterInfo.color">{{letterInfo.letter}}</span></pre>-->
+<p>Coloring text time: {{elapsedTime}} ms</p>
 <div class="row">
-<pre #coloredText id="coloredText"></pre>
+    <!--<pre id="coloredText" ><span #allTheseThings *ngFor="let letterInfo of letterInfoArray" [style.color]="letterInfo.color">{{letterInfo.letter}}</span></pre>-->
+    <pre #coloredText id="coloredText"></pre>
 </div>
-<p>Elapsed time: {{elapsedTime}}</p>
