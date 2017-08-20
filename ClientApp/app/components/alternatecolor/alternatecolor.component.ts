@@ -8,6 +8,8 @@ import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
 import "rxjs/add/operator/throttleTime";
 import "rxjs/add/observable/fromEvent";
+
+// This is implemented as a separated component so that it can be replaced by a different text formatter.
 @Component({
     selector: "alternate-color",
     templateUrl: "./alternatecolor.component.html",
@@ -73,6 +75,11 @@ export class AlternateColorComponent {
         this.validateColorText();
     }
 
+    // Manipulating the DOM is much faster than using Angular Templates.
+    // In this case inserting 10's of thousands of letters this is needed.
+    // An alternative using Templates is to be able to detect the text changes
+    // and have angular insert only thouse ones. This would require an external
+    // Diff JS library and some performance testing.
     private updateTextDOM() {
         let i = 0;
         let element: HTMLElement = this.coloredTextRef.nativeElement;
