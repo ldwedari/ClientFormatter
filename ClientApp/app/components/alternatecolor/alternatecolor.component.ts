@@ -71,8 +71,20 @@ export class AlternateColorComponent {
     }
 
     private parseColors() {
-        this.colors = this.colorText.split(";").map(color => color.trim());
+        this.colors = this.colorText
+            .replace(/,|\n/g, ";")
+            .split(";")
+            .map(color => color.trim())
+            .filter(color=> color!=="");
         this.validateColorText();
+    }
+
+    getNotRepeatingRandomNumber(max: number, previous: number) : number
+    {
+        let newRandom = Math.floor(Math.random() * max);
+        if (previous >= 0 && newRandom == previous)
+            newRandom = (newRandom + 1) % max;
+        return newRandom;
     }
 
     // Manipulating the DOM is much faster than using Angular Templates.
@@ -92,9 +104,11 @@ export class AlternateColorComponent {
         //    element.removeChild(element.firstChild);
         //}
         var fragment = document.createDocumentFragment();
+        let colorIndex: number = -1; 
         for (let char of this._text) {
+            colorIndex = this.getNotRepeatingRandomNumber(this.colors.length, colorIndex);
             let node = document.createElement("span");
-            node.style.color = this.colors[i % this.colors.length];
+            node.style.color = this.colors[colorIndex];
             node.textContent = char;
             fragment.appendChild(node);
             if (char !== " " && char !== "\t")
@@ -103,13 +117,17 @@ export class AlternateColorComponent {
         element.appendChild(fragment);
     }
 
+
+
     private updateTextTemplate() {
         let i = 0;
+        let colorIndex: number = -1; 
         for (let char of this._text) {
+            colorIndex = this.getNotRepeatingRandomNumber(this.colors.length, colorIndex);
             this.letterInfoArray.push(
                 {
                     letter: char,
-                    color: this.colors[i % this.colors.length]
+                    color: this.colors[colorIndex]
                 });
             if (char !== " " && char !== "\t")
                 i++;

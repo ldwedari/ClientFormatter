@@ -1,12 +1,13 @@
 <form #colorForm="ngForm" autocomplete="off">
     <div class="form-group row">
-        <label for="colorText">Type valid css colors separated by semicolons:</label>
+        <label for="colorText">Type css color names separated by commas or semicolons:</label>
         <span *ngIf="(colorNgModel.dirty || colorNgModel.touched)">
             <em *ngIf="colorNgModel.invalid">Required</em>
             <em *ngIf="colorNgModel.valid && !areColorsValid">Color {{invalidColor}} is not valid.</em>
         </span>
-        <input #colorText #colorNgModel="ngModel" (ngModel)="dummy" name="colorText" class="form-control col-xs-12" 
-               type="text" placeholder="Red;rgb(0,255,128);transparent" required/>
+        <textarea #colorText #colorNgModel="ngModel" (ngModel)="dummy" name="colorText" 
+            class="form-control col-xs-12" rows="2"
+            type="text" placeholder="Red;blue;transparent" required></textarea>
     </div>
 </form>
 <p>Coloring text time: {{elapsedTime}} ms</p>

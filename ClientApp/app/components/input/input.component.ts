@@ -25,7 +25,6 @@ export class InputComponent {
                 .distinctUntilChanged()
                 .subscribe(keyboardEvent => {
                     this.inputText = (<HTMLTextAreaElement>keyboardEvent.target).value;
-                    //console.log(this.inputText);
                     this.cdref.detectChanges();
                 });
         });

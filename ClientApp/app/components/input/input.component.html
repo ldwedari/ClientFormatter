@@ -6,8 +6,8 @@
             <span *ngIf="inputNgModel.invalid && (inputNgModel.dirty || inputNgModel.touched)">
                 <em *ngIf="inputNgModel.invalid">Required</em>  
             </span>
-            <textarea #inputTextBox #inputNgModel="ngModel" (ngModel)="dummy" class="form-control col-xs-12" name="inputTextBox" type="text"
-                      rows="10" placeholder="Some text here..." required></textarea>
+            <textarea #inputTextBox #inputNgModel="ngModel" (ngModel)="dummy" class="form-control col-xs-12" 
+                      name="inputTextBox" type="text" rows="10" placeholder="Some text here..." required></textarea>
         </div>
     </form>
     <alternate-color [text]="inputText"></alternate-color>
